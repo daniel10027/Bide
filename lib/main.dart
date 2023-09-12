@@ -1,4 +1,5 @@
-import 'package:bide/onboarding.dart';
+import 'package:bide/screens/onboarding.dart';
+import 'package:bide/screens/register.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const App());
@@ -11,7 +12,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
-      home: onBoardingScreen(),
+      home: RegisterScreen(),
     );
   }
 }

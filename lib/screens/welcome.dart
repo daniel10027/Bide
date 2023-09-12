@@ -21,7 +21,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             //crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/other/4.png", height: 300,),
+              Image.asset("assets/images/other/5.png", height: 300,),
               const SizedBox(height: 20,),
               const Text("Commencer", style: TextStyle(fontSize: 22, fontWeight:  FontWeight.bold),), 
               const SizedBox(height: 10,),
@@ -33,12 +33,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 child: CustomButton(
                   text: "Commencer",
                   onPressed: (){
-                     Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RegisterScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
-                            ),
-                          );
+                     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>RegisterScreen(),),);
                   },
                 ),
                 )

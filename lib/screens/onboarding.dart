@@ -1,4 +1,5 @@
-import 'package:bide/welcome.dart';
+import 'package:bide/screens/register.dart';
+import 'package:bide/screens/welcome.dart';
 import 'package:flutter/material.dart';
 
 class onBoardingScreen extends StatefulWidget {
@@ -68,7 +69,7 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) =>
-                                  WelcomeScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
+                                  RegisterScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
                             ),
                           );
                         } else {

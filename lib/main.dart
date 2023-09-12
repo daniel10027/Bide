@@ -1,5 +1,6 @@
 import 'package:bide/provider/auth_provider.dart';
 import 'package:bide/screens/onboarding.dart';
+import 'package:bide/screens/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,12 +16,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => AuthProvider(), // Initialize your AuthProvider
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          themeMode: ThemeMode.light,
-          home: onBoardingScreen(),
-        ));
+      return ChangeNotifierProvider(
+      create: (context) => AuthProvider(), // ← create/init your state model
+      child:MaterialApp(
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.light,
+      home: onBoardingScreen(),
+    ));
   }
 }

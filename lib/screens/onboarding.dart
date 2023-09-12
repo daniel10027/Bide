@@ -69,7 +69,7 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) =>
-                                  RegisterScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
+                                  WelcomeScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
                             ),
                           );
                         } else {

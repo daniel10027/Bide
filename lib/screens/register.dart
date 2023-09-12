@@ -1,7 +1,9 @@
+import 'package:bide/provider/auth_provider.dart';
 import 'package:bide/widgets/custom_button.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -138,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 50,
                   child: CustomButton(
                     text: "Connexion",
-                    onPressed: () {},
+                    onPressed: () => sendPhoneNumber(),
                   ),
                 )
               ],
@@ -147,5 +149,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         )),
       ),
     );
+  }
+
+  void sendPhoneNumber() {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    String phoneNumber = phoneController.text.trim();
+    ap.signInWithPhone(context, "+${selectedCountry.phoneCode}${phoneNumber}");
   }
 }

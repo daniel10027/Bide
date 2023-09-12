@@ -1,6 +1,8 @@
+import 'package:bide/provider/auth_provider.dart';
 import 'package:bide/screens/onboarding.dart';
 import 'package:bide/screens/register.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(const App());
 
@@ -9,10 +11,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      home: onBoardingScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.light,
+        home: onBoardingScreen(),
+      ),
     );
   }
 }

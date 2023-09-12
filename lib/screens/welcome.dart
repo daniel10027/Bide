@@ -1,12 +1,16 @@
+import 'package:bide/provider/auth_provider.dart';
+import 'package:bide/screens/home_screen.dart';
 import 'package:bide/screens/register.dart';
 import 'package:bide/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       body: SafeArea(
           child: Center(
@@ -45,12 +49,21 @@ class WelcomeScreen extends StatelessWidget {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            RegisterScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
-                      ),
-                    );
+                    ap.isSignedIn == true
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const HomeScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
+                            ),
+                          )
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const RegisterScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
+                            ),
+                          );
                   },
                   style: ButtonStyle(
                     foregroundColor:

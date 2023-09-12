@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "506880771982",
+    "project_id": "bide-b9f3c",
+    "storage_bucket": "bide-b9f3c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506880771982:android:e5f9fea62173c74bf406df",
+        "android_client_info": {
+          "package_name": "com.example.bide"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeAM8eDmAGWRSX42T_ZxmCceRhBRrjgqQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -12,7 +12,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
-      home: RegisterScreen(),
+      home: onBoardingScreen(),
     );
   }
 }

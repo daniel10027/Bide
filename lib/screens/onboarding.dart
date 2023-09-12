@@ -25,6 +25,15 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
     // TODO: implement dispose
     _pageController.dispose();
   }
+ // Method to navigate to the WelcomeScreen
+  void _navigateToWelcomeScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => WelcomeScreen(),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,12 +75,7 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_pageIndex == demo_data.length - 1) {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  WelcomeScreen(), // Remplacez WelcomeScreen() par le nom de votre classe WelcomeScreen
-                            ),
-                          );
+                        _navigateToWelcomeScreen();
                         } else {
                           _pageController.nextPage(
                               duration: Duration(milliseconds: 300),

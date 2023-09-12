@@ -1,7 +1,6 @@
 import 'package:bide/provider/auth_provider.dart';
 import 'package:bide/screens/home_screen.dart';
 import 'package:bide/screens/register.dart';
-import 'package:bide/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +9,7 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
+      final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       body: SafeArea(
           child: Center(

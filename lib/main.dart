@@ -16,12 +16,16 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return ChangeNotifierProvider(
-      create: (context) => AuthProvider(), // ← create/init your state model
-      child:MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      home: onBoardingScreen(),
-    ));
+
+       return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home:  onBoardingScreen(),
+        title: "Bide",
+      ),
+    );
   }
 }

@@ -142,7 +142,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
       }else{
         //nouvel utilisateur
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const UserInformationScreen()), (route) => false);
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const UserInfromationScreen()), (route) => false);
       }
     } );
     });

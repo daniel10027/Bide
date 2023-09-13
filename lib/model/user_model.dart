@@ -1,13 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class UserModel {
-  final String name;
-  final String email;
-  final String bio;
-  final String ProfilePic;
-  final String createdAt;
-  final String phoneNumber;
-  final String uid;
-  final int AccountBalance;
+   String name;
+   String email;
+   String bio;
+   String ProfilePic;
+   String createdAt;
+   String phoneNumber;
+   String uid;
+   int AccountBalance;
 
   UserModel({
     required this.name,

@@ -1,6 +1,8 @@
+import 'package:bide/provider/auth_provider.dart';
 import 'package:bide/screens/register.dart';
 import 'package:bide/screens/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class onBoardingScreen extends StatefulWidget {
   const onBoardingScreen({super.key});
@@ -22,21 +24,15 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
 
   @override
   void dispose() {
+    super.dispose();
     // TODO: implement dispose
     _pageController.dispose();
   }
 
-  // Method to navigate to the WelcomeScreen
-  void _navigateToWelcomeScreen() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => WelcomeScreen(),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       body: SafeArea(
           child: Padding(
@@ -75,11 +71,12 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_pageIndex == demo_data.length - 1) {
-                       Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => WelcomeScreen(),
-                              ),
-                            );
+                       Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const WelcomeScreen(),
+                          ),
+                        );
                         } else {
                           _pageController.nextPage(
                               duration: Duration(milliseconds: 300),

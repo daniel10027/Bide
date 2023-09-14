@@ -7,6 +7,8 @@ import 'package:bide/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'game_home.dart';
+
 class UserInfromationScreen extends StatefulWidget {
   const UserInfromationScreen({super.key});
 
@@ -43,7 +45,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
         child: isLoading == true
             ? const Center(
                 child: CircularProgressIndicator(
-                  color: Colors.purple,
+                  color: Colors.blueAccent,
                 ),
               )
             : SingleChildScrollView(
@@ -186,23 +188,23 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
       AccountBalance: 0,
     );
     if (image != null) {
-      // ap.saveUserDataToFirebase(
-      //   context: context,
-      //   userModel: userModel,
-      //   profilePic: image!,
-      //   onSuccess: () {
-      //     ap.saveUserDataToSP().then(
-      //           (value) => ap.setSignIn().then(
-      //                 (value) => Navigator.pushAndRemoveUntil(
-      //                     context,
-      //                     MaterialPageRoute(
-      //                       builder: (context) => const HomeScreen(),
-      //                     ),
-      //                     (route) => false),
-      //               ),
-      //         );
-      //   },
-      // );
+      ap.saveUserDataToFirebase(
+        context: context,
+        userModel: userModel,
+        ProfilePic: image!,
+        onSuccess: () {
+          ap.saveUserDataToSP().then(
+                (value) => ap.setSignIn().then(
+                      (value) => Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                          (route) => false),
+                    ),
+              );
+        },
+      );
     } else {
       showSnackBarWidget(context, "Merci de Seletionner une Photo");
     }

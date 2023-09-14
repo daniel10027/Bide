@@ -30,10 +30,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     phoneController.selection = TextSelection.fromPosition(
         TextPosition(offset: phoneController.text.length));
 
+     final isLoading = Provider.of<AuthProvider>(context, listen:true).isLoading;
     return Scaffold(
       body: SingleChildScrollView(
-        child: SafeArea(
-            child: Center(
+        child: SafeArea(child: isLoading == true ? const Center(child: CircularProgressIndicator(color: Colors.blueAccent,)) :  Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 35),
             child: Column(
@@ -142,7 +142,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     text: "Connexion",
                     onPressed: () => sendPhoneNumber(),
                   ),
-                )
+                ), 
+                 if (isLoading)
+        Container(
+          color: Colors.black.withOpacity(0.5),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: Colors.blueAccent,
+            ),
+          ),
+        ),
               ],
             ),
           ),

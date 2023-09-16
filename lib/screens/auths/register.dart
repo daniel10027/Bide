@@ -1,4 +1,5 @@
 import 'package:bide/provider/auth_provider.dart';
+import 'package:bide/utils/colors.dart';
 import 'package:bide/widgets/custom_button.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     phoneController.selection = TextSelection.fromPosition(
         TextPosition(offset: phoneController.text.length));
 
-     final isLoading = Provider.of<AuthProvider>(context, listen:true).isLoading;
+    final isLoading = Provider.of<AuthProvider>(context, listen:true).isLoading;
     return Scaffold(
+      backgroundColor: secondaryColor,
       body: SingleChildScrollView(
         child: SafeArea(child: isLoading == true ? const Center(child: CircularProgressIndicator(color: Colors.blueAccent,)) :  Center(
           child: Padding(
@@ -65,7 +67,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black38),
+                      color: Colors.black38
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(
@@ -121,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             margin: const EdgeInsets.all(10.0),
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.green,
+                              color: Colors.orange,
                             ),
                             child: const Icon(
                               Icons.done,
@@ -148,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           color: Colors.black.withOpacity(0.5),
           child: Center(
             child: CircularProgressIndicator(
-              color: Colors.blueAccent,
+              color: primaryColor,
             ),
           ),
         ),
@@ -164,5 +167,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     String phoneNumber = phoneController.text.trim();
     ap.signInWithPhone(context, "+${selectedCountry.phoneCode}${phoneNumber}");
+   
   }
 }

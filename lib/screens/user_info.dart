@@ -1,26 +1,36 @@
 import 'dart:io';
 import 'package:bide/model/user_model.dart';
 import 'package:bide/provider/auth_provider.dart';
-import 'package:bide/screens/home_screen.dart';
+import 'package:bide/screens/main_home.dart';
 import 'package:bide/utils/utils.dart';
 import 'package:bide/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
-import 'game_home.dart';
+import '../utils/colors.dart';
 
-class UserInfromationScreen extends StatefulWidget {
-  const UserInfromationScreen({super.key});
+class UserInformationScreen extends StatefulWidget {
+  const UserInformationScreen({Key? key}) : super(key: key);
 
   @override
-  State<UserInfromationScreen> createState() => _UserInfromationScreenState();
+  _UserInformationScreenState createState() => _UserInformationScreenState();
 }
 
-class _UserInfromationScreenState extends State<UserInfromationScreen> {
+class _UserInformationScreenState extends State<UserInformationScreen> {
+  String imageUrl = "";
   File? image;
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final bioController = TextEditingController();
+  bool isLoading = false; // Ajout de la variable isLoading
+
+  @override
+  void initState() {
+    super.initState();
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+    ap.getDataFromSP();
+  }
 
   @override
   void dispose() {
@@ -38,49 +48,81 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading =
-        Provider.of<AuthProvider>(context, listen: true).isLoading;
+    final ap = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
+      backgroundColor: secondaryColor,
       body: SafeArea(
-        child: isLoading == true
-            ? const Center(
+        child: FutureBuilder(
+          future: ap.getDataFromSP(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
                 child: CircularProgressIndicator(
-                  color: Colors.blueAccent,
+                  color: primaryColor,
                 ),
-              )
-            : SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 25.0, horizontal: 5.0),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else {
+              nameController.text = ap.userModel.name ?? "";
+              emailController.text = ap.userModel.email ?? "";
+              bioController.text = ap.userModel.bio ?? "";
+              imageUrl = ap.userModel.ProfilePic ?? "";
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 25.0,
+                  horizontal: 5.0,
+                ),
                 child: Center(
                   child: Column(
                     children: [
                       InkWell(
-                        onTap: () => selectImage(),
-                        child: image == null
-                            ? const CircleAvatar(
-                                backgroundColor: Colors.blueAccent,
-                                radius: 50,
-                                child: Icon(
-                                  Icons.account_circle,
-                                  size: 50,
-                                  color: Colors.white,
+                        // onTap: () => selectImage(),
+                        child: imageUrl.isNotEmpty
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10000.0),
+                                child: CachedNetworkImage(
+                                  imageUrl: imageUrl,
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                  fit: BoxFit.cover,
+                                  width: 100, // Set the desired width
+                                  height: 100, // Set the desired height
                                 ),
                               )
-                            : CircleAvatar(
-                                backgroundImage: FileImage(image!),
-                                radius: 50,
-                              ),
+                            : (image != null
+                                ? CircleAvatar(
+                                    backgroundImage: FileImage(image!),
+                                    radius: 50,
+                                  )
+                                : CircleAvatar(
+                                    backgroundColor: primaryColor,
+                                    radius: 50,
+                                    child: Icon(
+                                      Icons.account_circle,
+                                      size: 50,
+                                      color: Colors.white,
+                                    ),
+                                  )),
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 15),
+                          vertical: 5,
+                          horizontal: 15,
+                        ),
                         margin: const EdgeInsets.only(top: 20),
                         child: Column(
                           children: [
                             // name field
-                            textFeld(
-                              hintText: " Dip Anda",
+                            textField(
+                              hintText: "Dip Anda",
                               icon: Icons.account_circle,
                               inputType: TextInputType.name,
                               maxLines: 1,
@@ -88,7 +130,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                             ),
 
                             // email
-                            textFeld(
+                            textField(
                               hintText: "dipanda@example.com",
                               icon: Icons.email,
                               inputType: TextInputType.emailAddress,
@@ -97,7 +139,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                             ),
 
                             // bio
-                            textFeld(
+                            textField(
                               hintText: "Votre Bio ici...",
                               icon: Icons.edit,
                               inputType: TextInputType.name,
@@ -107,24 +149,31 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20),
                       SizedBox(
                         height: 50,
                         width: MediaQuery.of(context).size.width * 0.90,
-                        child: CustomButton(
-                          text: "Continuer",
-                          onPressed: () => storeData(),
-                        ),
+                        child: isLoading
+                            ? CircularProgressIndicator(
+                                color: primaryColor,
+                              )
+                            : CustomButton(
+                                text: "Continuer",
+                                onPressed: () => storeData(),
+                              ),
                       )
                     ],
                   ),
                 ),
-              ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
 
-  Widget textFeld({
+  Widget textField({
     required String hintText,
     required IconData icon,
     required TextInputType inputType,
@@ -143,7 +192,7 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
             margin: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: Colors.blueAccent,
+              color: primaryColor,
             ),
             child: Icon(
               icon,
@@ -175,7 +224,6 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
 
   // store user data to database
   void storeData() async {
-    print("Soumission******************************************");
     final ap = Provider.of<AuthProvider>(context, listen: false);
     UserModel userModel = UserModel(
       name: nameController.text.trim(),
@@ -187,26 +235,32 @@ class _UserInfromationScreenState extends State<UserInfromationScreen> {
       uid: "",
       AccountBalance: 0,
     );
-    if (image != null) {
-      ap.saveUserDataToFirebase(
-        context: context,
-        userModel: userModel,
-        ProfilePic: image!,
-        onSuccess: () {
-          ap.saveUserDataToSP().then(
-                (value) => ap.setSignIn().then(
-                      (value) => Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
-                          ),
-                          (route) => false),
+    setState(() {
+      isLoading =
+          true; // Affichez l'indicateur de progression pendant la sauvegarde
+    });
+
+    ap.saveUserDataToFirebase(
+      context: context,
+      userModel: userModel,
+      onSuccess: () {
+        ap.saveUserDataToSP().then(
+              (value) => ap.setSignIn().then(
+                    (value) => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                      (route) => false,
                     ),
-              );
-        },
-      );
-    } else {
-      showSnackBarWidget(context, "Merci de Seletionner une Photo");
-    }
+                  ),
+            );
+      },
+    );
+
+    setState(() {
+      isLoading =
+          false; // Masquez l'indicateur de progression après la sauvegarde
+    });
   }
 }

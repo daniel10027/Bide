@@ -1,10 +1,13 @@
 import 'package:bide/provider/auth_provider.dart';
+import 'package:bide/utils/colors.dart';
+import 'package:bide/screens/main_home.dart';
 import 'package:bide/screens/user_info.dart';
 import 'package:bide/utils/utils.dart';
 import 'package:bide/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+
 
 class OtpScreen extends StatefulWidget {
   final String verificationId;
@@ -22,7 +25,7 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
-            child: isLoading == true ? const Center(child: CircularProgressIndicator(color: Colors.blueAccent,)) :  Center(
+            child: isLoading == true ? const Center(child: CircularProgressIndicator(color: Colors.orange)) :  Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
@@ -75,7 +78,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       height: 60,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.blueAccent)),
+                          border: Border.all(color: primaryColor)),
                       textStyle: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -121,7 +124,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueAccent),
+                      color: Colors.orange),
                 ),
               ],
             ),
@@ -139,10 +142,11 @@ class _OtpScreenState extends State<OtpScreen> {
     ap.checkExinstingUser().then((value) async {
       if(value == true){
         // utilisateur exiatant
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const HomeScreen()), (route) => false);
 
       }else{
         //nouvel utilisateur
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const UserInfromationScreen()), (route) => false);
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> const UserInformationScreen()), (route) => false);
       }
     } );
     });

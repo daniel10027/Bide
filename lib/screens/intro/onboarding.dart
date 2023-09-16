@@ -1,8 +1,7 @@
-import 'package:bide/provider/auth_provider.dart';
-import 'package:bide/screens/register.dart';
-import 'package:bide/screens/welcome.dart';
+import 'package:bide/screens/intro/welcome.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
+import '../../utils/colors.dart';
 
 class onBoardingScreen extends StatefulWidget {
   const onBoardingScreen({super.key});
@@ -25,15 +24,14 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
   @override
   void dispose() {
     super.dispose();
-    // TODO: implement dispose
     _pageController.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
+      backgroundColor: secondaryColor,
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,6 +67,7 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
                     height: 60,
                     width: 60,
                     child: ElevatedButton(
+                      
                       onPressed: () {
                         if (_pageIndex == demo_data.length - 1) {
                        Navigator.pushReplacement(
@@ -83,8 +82,8 @@ class _onBoardingScreenState extends State<onBoardingScreen> {
                               curve: Curves.easeInSine);
                         }
                       },
-                      style: ElevatedButton.styleFrom(shape: CircleBorder()),
-                      child: Icon(Icons.arrow_right_sharp, color: Colors.white),
+                      style: ElevatedButton.styleFrom(shape: CircleBorder(), backgroundColor: primaryColor),
+                      child: Icon(Icons.arrow_right_sharp, color: secondaryColor, size: 50,),
                     )),
               ],
             ),
@@ -114,7 +113,7 @@ class DotIndicator extends StatelessWidget {
       width: 4,
       decoration: BoxDecoration(
           color:
-              isActive ? Colors.blueAccent : Colors.blueAccent.withOpacity(0.4),
+              isActive ? primaryColor : Colors.blueAccent.withOpacity(0.4),
           borderRadius: const BorderRadius.all(Radius.circular(12))),
     );
   }

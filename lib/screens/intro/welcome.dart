@@ -1,6 +1,7 @@
 import 'package:bide/provider/auth_provider.dart';
-import 'package:bide/screens/home_screen.dart';
-import 'package:bide/screens/register.dart';
+import 'package:bide/utils/colors.dart';
+import 'package:bide/screens/main_home.dart';
+import 'package:bide/screens/auths/register.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,7 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
       final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
+      backgroundColor: secondaryColor,
       body: SafeArea(
           child: Center(
         child: Padding(
@@ -64,11 +66,13 @@ class WelcomeScreen extends StatelessWidget {
                             ),
                           );
                   },
+                  
                   style: ButtonStyle(
+                    
                     foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blueAccent),
+                        MaterialStateProperty.all<Color>(primaryColor),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50.0))),

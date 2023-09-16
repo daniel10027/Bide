@@ -1,6 +1,6 @@
 import 'package:bide/provider/auth_provider.dart';
-import 'package:bide/screens/onboarding.dart';
-import 'package:bide/screens/welcome.dart';
+import 'package:bide/screens/intro/onboarding.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

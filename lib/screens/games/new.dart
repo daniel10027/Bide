@@ -1,4 +1,5 @@
 import 'package:bide/model/game_model.dart';
+import 'package:bide/screens/games/game_details.dart';
 import 'package:bide/utils/colors.dart';
 import 'package:bide/screens/main_home.dart';
 import 'package:bide/utils/utils.dart';
@@ -13,12 +14,12 @@ class NewGameScreen extends StatefulWidget {
 
 class _NewGameScreenState extends State<NewGameScreen> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _initialAmountController = TextEditingController();
+  final _initialAmountController = TextEditingController();
   int _numberOfDice = 1;
   int _numberOfPlayers = 1;
   int _numberOfPart = 1;
   TimeOfDay _selectedTime = TimeOfDay.now();
-  bool isLoading = false; // Variable pour gérer l'indicateur de progression
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +40,10 @@ class _NewGameScreenState extends State<NewGameScreen> {
                 TextFormField(
                   controller: _initialAmountController,
                   keyboardType: TextInputType.number,
-                  decoration:
-                      InputDecoration(labelText: 'Montant initial (minimyun 100 Fracs / Maximun 1.000.000 Francs)'),
+                  decoration: InputDecoration(
+                    labelText:
+                        'Montant initial (minimyun 100 Fracs / Maximun 1.000.000 Francs)',
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer un montant initial';
@@ -49,111 +52,89 @@ class _NewGameScreenState extends State<NewGameScreen> {
                     if (amount == null || amount < 100) {
                       return 'Le montant initial doit être d\'au moins 100';
                     }
-                     if (amount > 1000000) {
+                    if (amount > 1000000) {
                       return 'Le montant initial doit être d\'au plus 1.000.000';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 20,),
-                DropdownButtonFormField<int>(
-                  value: _numberOfDice,
-                  onChanged: (value) {
-                    setState(() {
-                      _numberOfPart = value!;
-                    });
-                  },
-                  items: [1, 2,3].map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text('$value Tour(s)'),
-                    );
-                  }).toList(),
-                  decoration: InputDecoration(labelText: 'Nombre de Tour'),
-                ),
-                 SizedBox(height: 20,),
-                DropdownButtonFormField<int>(
-                  value: _numberOfDice,
-                  onChanged: (value) {
-                    setState(() {
-                      _numberOfDice = value!;
-                    });
-                  },
-                  items: [1, 2].map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text('$value dé(s)'),
-                    );
-                  }).toList(),
-                  decoration: InputDecoration(labelText: 'Nombre de dés'),
-                ),
-                 SizedBox(height: 20,),
-                DropdownButtonFormField<int>(
-                  value: _numberOfPlayers,
-                  onChanged: (value) {
-                    setState(() {
-                      _numberOfPlayers = value!;
-                    });
-                  },
-                  items: [1, 2, 3,4].map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text('$value joueur(s)'),
-                    );
-                  }).toList(),
-                  decoration: InputDecoration(labelText: 'Nombre de joueurs'),
-                ),
-                 SizedBox(height: 20,),
+                SizedBox(height: 20),
+                buildDropdown('Nombre de Tour', _numberOfPart, [1, 2, 3]),
+                SizedBox(height: 20),
+                buildDropdown('Nombre de dés', _numberOfDice, [1, 2]),
+                SizedBox(height: 20),
+                buildDropdown('Nombre de joueurs', _numberOfPlayers, [1, 2, 3, 4]),
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _selectTime,
                   child: Row(
                     children: [
                       Text('Sélectionner l\'heure de début'),
-                      SizedBox(width: 10,),
-                      Icon(Icons.watch_later, color: secondaryColor,),
-                       SizedBox(width: 10,),
+                      SizedBox(width: 10),
+                      Icon(
+                        Icons.watch_later,
+                        color: secondaryColor,
+                      ),
+                      SizedBox(width: 10),
                       Text(
-                      '${_selectedTime.format(context)}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                        '${_selectedTime.format(context)}',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
-                   style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(primaryColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50.0))),
-                  ),
-                ),
-                
-               
-                SizedBox(height: 50),
-                Center(
-                  child: AbsorbPointer(
-                    absorbing: isLoading, // Désactivez les interactions si isLoading est vrai
-                    child: ElevatedButton(
-                      onPressed: _createGame,
-                      child: isLoading
-                          ? CircularProgressIndicator(color: primaryColor,) // Indicateur de progression pendant le chargement
-                          : Text('Créer le jeu'),
-                       style: ButtonStyle(
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(primaryColor),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50.0))),
-                      ),
+                  style: ElevatedButton.styleFrom(
+                    primary: primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
                     ),
                   ),
                 ),
+                SizedBox(height: 50),
+                buildCreateGameButton(),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDropdown(String label, int value, List<int> items) {
+    return DropdownButtonFormField<int>(
+      value: value,
+      onChanged: (newValue) {
+        setState(() {
+          if (label == 'Nombre de Tour') {
+            _numberOfPart = newValue!;
+          } else if (label == 'Nombre de dés') {
+            _numberOfDice = newValue!;
+          } else if (label == 'Nombre de joueurs') {
+            _numberOfPlayers = newValue!;
+          }
+        });
+      },
+      items: items.map<DropdownMenuItem<int>>((int itemValue) {
+        return DropdownMenuItem<int>(
+          value: itemValue,
+          child: Text('$itemValue ${label == 'Nombre de Tour' ? 'Tour(s)' : label == 'Nombre de dés' ? 'dé(s)' : 'joueur(s)'}'),
+        );
+      }).toList(),
+      decoration: InputDecoration(labelText: label),
+    );
+  }
+
+  ElevatedButton buildCreateGameButton() {
+    return ElevatedButton(
+      onPressed: _createGame,
+      child: isLoading
+          ? CircularProgressIndicator(
+              color: primaryColor,
+            )
+          : Text('Créer le jeu'),
+      style: ElevatedButton.styleFrom(
+        primary: primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50.0),
         ),
       ),
     );
@@ -196,16 +177,38 @@ class _NewGameScreenState extends State<NewGameScreen> {
       );
 
       try {
-        DocumentReference gameRef = await FirebaseFirestore.instance
-            .collection('games')
-            .add(game.toMap());
+        final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+        final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-        String gameId = gameRef.id;
-        print(gameId);
+        final connectedUserUid = _firebaseAuth.currentUser!.uid;
+        final userDocument =
+            await _firebaseFirestore.collection('users').doc(connectedUserUid).get();
 
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => HomeScreen(),
-        ));
+        final userBalance = userDocument.data()?['AccountBalance'] ?? 0;
+
+        if (userBalance >= initialAmount) {
+          final newBalance = userBalance - initialAmount;
+          await _firebaseFirestore
+              .collection('users')
+              .doc(connectedUserUid)
+              .update({'AccountBalance': newBalance});
+
+          DocumentReference gameRef = await FirebaseFirestore.instance
+              .collection('games')
+              .add(game.toMap());
+
+          showSnackBarWidget(context, 'Solde Débité de ${initialAmount} Fcfa');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GameDetailScreen(
+                gameRef: gameRef,
+              ),
+            ),
+          );
+        } else {
+          showSnackBarWidget(context, 'Solde Insuffisant');
+        }
       } catch (e) {
         showSnackBarWidget(context, e.toString());
       } finally {

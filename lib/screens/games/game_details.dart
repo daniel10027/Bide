@@ -9,8 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 class GameDetailScreen extends StatefulWidget {
-  final DocumentReference
-      gameRef; // Utilisez une référence au jeu au lieu du snapshot
+  final DocumentReference gameRef;
 
   const GameDetailScreen({Key? key, required this.gameRef}) : super(key: key);
 
@@ -19,13 +18,14 @@ class GameDetailScreen extends StatefulWidget {
 }
 
 class _GameDetailScreenState extends State<GameDetailScreen> {
-  // Utilisez un Stream pour surveiller les changements du jeu
   late Stream<DocumentSnapshot> gameStream;
+  int currentParticipants = 0;
+  List<String> participants =
+      []; // Variable pour suivre le nombre de participants actuels
 
   @override
   void initState() {
     super.initState();
-    // Initialisez le Stream avec la référence au jeu
     gameStream = widget.gameRef.snapshots();
   }
 
@@ -41,10 +41,9 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Utilisez un StreamBuilder pour afficher les données du jeu en temps réel
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    final connectedUserUid =
-        _firebaseAuth.currentUser!.uid; // Utilisez la propriété uid du Provider
+    final connectedUserUid = _firebaseAuth.currentUser!.uid;
+
     return StreamBuilder<DocumentSnapshot>(
       stream: gameStream,
       builder: (context, snapshot) {
@@ -74,7 +73,6 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
         }
 
         if (!snapshot.hasData || snapshot.data == null) {
-          // Les données du jeu n'existent pas, affichez un message approprié ou effectuez une autre action
           return Scaffold(
             appBar: AppBar(
               backgroundColor: primaryColor,
@@ -86,9 +84,8 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
           );
         }
 
-        // Récupérez les données du jeu à partir du snaps
-
         final gameData = snapshot.data!.data() as Map<String, dynamic>;
+        participants = List<String>.from(gameData['participants'] ?? []);
 
         DateTime createdTime = (gameData['created'] as Timestamp).toDate();
         String formattedDate =
@@ -99,6 +96,8 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
         int endTime = gameStartTime.isBefore(now)
             ? now.millisecondsSinceEpoch
             : gameStartTime.millisecondsSinceEpoch;
+
+        final numberOfPlayers = gameData['numberOfPlayers'];
 
         return Scaffold(
           backgroundColor: secondaryColor,
@@ -274,6 +273,31 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                               ),
                             ],
                           ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.check,
+                                color: secondaryColor,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Participants inscrit : ${currentParticipants}/$numberOfPlayers ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -288,63 +312,67 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                     SizedBox(
                       height: 50,
                       child: connectedUserUid == gameData['uid']
-                          ? ElevatedButton(
-                              onPressed: () {
-                                _deleteGame(gameData);
-                              },
-                              style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.white),
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                  connectedUserUid == gameData['uid']
-                                      ? const Color.fromARGB(255, 91, 13, 8)
-                                      : Colors.grey,
-                                ),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50.0),
+                          ? participants.contains(connectedUserUid)
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    // Action à effectuer lorsque l'utilisateur est déjà inscrit
+                                    // Mettez ici l'action que vous souhaitez exécuter.
+                                  },
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      Colors.white,
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      Colors
+                                          .green, // Couleur pour "Commer à jouer"
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(50.0),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              child: Text(
-                                "Supprimer le Jeu",
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            )
-                          : SizedBox(),
+                                  child: Text(
+                                    "Commer à jouer",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              : SizedBox() // Si l'utilisateur actuel a créé le jeu, ne rien afficher
+                          : currentParticipants < numberOfPlayers
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    _joinGame(gameData, numberOfPlayers);
+                                  },
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      Colors.white,
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                      primaryColor, // Couleur pour "Rejoindre le Jeu"
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(50.0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Rejoindre le Jeu",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              : SizedBox(), // Si le nombre de participants est atteint, ne rien afficher
                     ),
                     SizedBox(
                       width: 20,
-                    ),
-                    SizedBox(
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          showSnackBarWidget(
-                            context,
-                            "Votre Solde est insuffisant, merci de recharger votre compte.",
-                          );
-                        },
-                        style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(primaryColor),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50.0),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          "Rejoindre le Jeu",
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -356,28 +384,68 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
     );
   }
 
+  void _showDeleteGameConfirmationDialog(
+      BuildContext context, int initialAmount, gameData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Confirmation de suppression",
+            style: TextStyle(color: primaryColor),
+          ),
+          content: Text(
+              "En supprimant le jeu, vous perdrez $initialAmount Fcfa. Voulez-vous continuer ?"),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                "Annuler",
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Ferme le dialogue
+              },
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            TextButton(
+              child: Text(
+                "Continuer",
+                style:
+                    TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+              ),
+              onPressed: () {
+                _deleteGame(gameData);
+                Navigator.of(context).pop(); // Ferme le dialogue
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _deleteGame(gameData) async {
     final gameUid = gameData['uid'];
     final gameId = widget.gameRef.id;
     final participants = List<String>.from(gameData['participants'] ?? []);
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    final connectedUserUid =
-        _firebaseAuth.currentUser!.uid; // Utilisez la propriété uid du Provider
+    final connectedUserUid = _firebaseAuth.currentUser!.uid;
     final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
     if (connectedUserUid == gameUid) {
       if (participants.length == 1) {
         try {
           // Supprimer le jeu de la collection "games" en utilisant son ID
-           await _firebaseFirestore.collection('games').doc(gameId).update({
-          'closed': true,
-        });
-          print('Jeu fermé avec succès.');
+          await _firebaseFirestore.collection('games').doc(gameId).delete();
+          print('Jeu supprimé avec succès.');
         } catch (e) {
           showSnackBarWidget(context, e.toString());
           // Vous pouvez gérer l'erreur ici en affichant un message d'erreur ou en lançant une exception.
         }
-         Navigator.of(context).pushReplacement(
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => HomeScreen(),
           ),
@@ -387,6 +455,82 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
         showSnackBarWidget(context,
             "Suppression impossible, d'autres joueurs ont rejoint la partie");
       }
+    }
+  }
+
+  void _joinGame(gameData, int numberOfPlayers) async {
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+    try {
+      final gameDocument = await widget.gameRef.get();
+      if (gameDocument.exists) {
+        final participants = List<String>.from(gameData['participants'] ?? []);
+        final connectedUserUid = _firebaseAuth.currentUser!.uid;
+
+        // Obtenez la valeur actuelle de userBalance depuis Firebase
+        final userDocument = await _firebaseFirestore
+            .collection('users')
+            .doc(connectedUserUid)
+            .get();
+
+        if (userDocument.exists) {
+          final userBalance = userDocument.data()?['AccountBalance'] ?? 0;
+          final initialAmount = gameData['initialAmount'] ?? 0;
+
+          if (userBalance >= initialAmount) {
+            if (participants.length < numberOfPlayers) {
+              // Déduisez initialAmount du solde de l'utilisateur dans Firebase
+              final newBalance = userBalance - initialAmount;
+              await _firebaseFirestore
+                  .collection('users')
+                  .doc(connectedUserUid)
+                  .update({'AccountBalance': newBalance});
+
+              if (!participants.contains(connectedUserUid)) {
+                participants.add(connectedUserUid);
+
+                // Mettez à jour le document de jeu avec la nouvelle liste de participants
+                await widget.gameRef.update({
+                  'participants': participants,
+                });
+
+                _VerifyAndupdateParticipantsList(participants);
+
+                // Mettez à jour la variable currentParticipants
+                setState(() {
+                  currentParticipants = participants.length;
+                });
+
+                showSnackBarWidget(context, 'Vous avez rejoint ce Jeu');
+              } else {
+                showSnackBarWidget(context, 'Vous avez déjà rejoint ce Jeu');
+              }
+            } else {
+              showSnackBarWidget(context, 'Nombre de participants atteint');
+            }
+          } else {
+            showSnackBarWidget(context, 'Votre solde est insuffisant');
+          }
+        }
+      }
+    } catch (e) {
+      showSnackBarWidget(
+          context, 'Erreur lors de la tentative de rejoindre le jeu : $e');
+    }
+  }
+
+  void _VerifyAndupdateParticipantsList(List<String> participants) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('games')
+          .doc(widget.gameRef.id) // Utilisez le document du jeu actuel
+          .update({
+        'participants': participants,
+      });
+      print('Liste des participants mise à jour avec succès.');
+    } catch (e) {
+      print('Erreur lors de la mise à jour de la liste des participants : $e');
     }
   }
 }

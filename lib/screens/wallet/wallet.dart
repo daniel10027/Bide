@@ -1,5 +1,6 @@
 import 'package:bide/provider/auth_provider.dart';
 import 'package:bide/screens/wallet/add_fund.dart';
+import 'package:bide/screens/wallet/add_money.dart';
 import 'package:bide/utils/colors.dart';
 import 'package:bide/utils/utils.dart';
 import 'package:bide/widgets/custom_button.dart';
@@ -58,7 +59,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         Container(
                           padding: EdgeInsets.all(32),
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: primaryColor,
                             boxShadow: [
                               BoxShadow(
                                 color: primaryColor.withOpacity(0.3),
@@ -79,12 +80,12 @@ class _WalletScreenState extends State<WalletScreen> {
                                   Image.asset(
                                     "assets/images/logo/logo.png",
                                     height: 70,
-                                    color: primaryColor,
+                                    color: Colors.orangeAccent,
                                   ),
                                   Text(
                                     "Bide Bank",
                                     style: GoogleFonts.roboto(
-                                        fontSize: 20, color: primaryColor),
+                                        fontSize: 20, color: secondaryColor),
                                   ),
                                 ],
                               ),
@@ -101,12 +102,12 @@ class _WalletScreenState extends State<WalletScreen> {
                                   Text(
                                     "Solde : ",
                                     style: GoogleFonts.roboto(
-                                        fontSize: 24, color: primaryColor),
+                                        fontSize: 24, color: secondaryColor),
                                   ),
                                   Text(
                                     "$userBalance Fcfa", // Utilisez la valeur de userBalance ici
                                     style: GoogleFonts.roboto(
-                                        fontSize: 24, color: primaryColor),
+                                        fontSize: 24, color: secondaryColor),
                                   ),
                                 ],
                               ),
@@ -139,12 +140,12 @@ class _WalletScreenState extends State<WalletScreen> {
                                   Text(
                                     "$name", // Utilisez la valeur de name ici
                                     style: GoogleFonts.roboto(
-                                        fontSize: 18, color: primaryColor),
+                                        fontSize: 18, color: secondaryColor),
                                   ),
                                   Text(
                                     "08/2030",
                                     style: GoogleFonts.roboto(
-                                        fontSize: 18, color: primaryColor),
+                                        fontSize: 18, color: secondaryColor),
                                   ),
                                 ],
                               ),
@@ -163,7 +164,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    AddFundScreen(), // Remplacez AddFundScreen() par le nom de votre classe AddFundScreen
+                                    AddMoney(), // Remplacez AddFundScreen() par le nom de votre classe AddFundScreen
                               ),
                             ),
                           ),

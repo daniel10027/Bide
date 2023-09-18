@@ -1,3 +1,4 @@
+import 'package:bide/screens/wallet/add_fund.dart';
 import 'package:bide/utils/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -7,11 +8,12 @@ class AddMoney extends StatelessWidget {
     return Scaffold(
       backgroundColor: secondaryColor,
       appBar: AppBar(
-        title: Text('Portefeuille'),
+        title: Text('Portefeuille.....'),
         backgroundColor: primaryColor, // Couleur de l'app bar
       ),
       body: Card(
-        color: secondaryColor,        margin: EdgeInsets.all(10),
+        color: secondaryColor,
+        margin: EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,6 +32,13 @@ class AddMoney extends StatelessWidget {
                   subtitle: 'Rechargement via Wave',
                   onTap: () {
                     // Navigate to another page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AddFundScreen(), // Remplacez AddFundScreen() par le nom de votre classe AddFundScreen
+                      ),
+                    );
                   },
                 ),
                 _buildListItem(
@@ -38,6 +47,13 @@ class AddMoney extends StatelessWidget {
                   subtitle: 'Rechargement via Orange',
                   onTap: () {
                     // Navigate to another page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AddFundScreen(), // Remplacez AddFundScreen() par le nom de votre classe AddFundScreen
+                      ),
+                    );
                   },
                 ),
                 _buildListItem(
@@ -46,6 +62,13 @@ class AddMoney extends StatelessWidget {
                   subtitle: 'Rechargement via Moov',
                   onTap: () {
                     // Navigate to another page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AddFundScreen(), // Remplacez AddFundScreen() par le nom de votre classe AddFundScreen
+                      ),
+                    );
                   },
                 ),
                 _buildListItem(
@@ -54,6 +77,13 @@ class AddMoney extends StatelessWidget {
                   subtitle: 'Rechargement via Mtn',
                   onTap: () {
                     // Navigate to another page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AddFundScreen(), // Remplacez AddFundScreen() par le nom de votre classe AddFundScreen
+                      ),
+                    );
                   },
                 ),
               ],
@@ -105,9 +135,9 @@ class AddMoney extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: primaryColor,
                 border: Border.all(
-                    color: Colors.black,
-                    width: 2,
-                  ),
+                  color: Colors.black,
+                  width: 2,
+                ),
               ),
               child: IconButton(
                 onPressed: onTap,
